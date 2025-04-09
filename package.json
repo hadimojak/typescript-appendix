@@ -10,6 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "@types/faker": "^6.6.8",
     "axios": "^1.7.9"
-  }
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "type": "module"
 }
