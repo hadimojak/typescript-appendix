@@ -15,6 +15,7 @@
     "axios": "^1.7.9"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "typescript": "^5.8.3"
   },
   "type": "module"
