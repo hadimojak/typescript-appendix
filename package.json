@@ -10,7 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@faker-js/faker": "^9.6.0",
+    "@faker-js/faker": "^9.7.0",
     "@types/faker": "^6.6.8",
     "axios": "^1.7.9",
     "leaflet": "^1.9.4"

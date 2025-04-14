@@ -1,8 +1,6 @@
-import { User } from "./User";
-import { Company } from "./Company";
 import * as L from "leaflet";
 
-interface mappable {
+export interface mappable {
   location: {
     lat: number;
     lng: number;
@@ -11,6 +9,7 @@ interface mappable {
 
 export class CustomMap {
   private map: L.Map;
+  private address: string = "";
 
   constructor(divId: string) {
     this.map = L.map(divId);
@@ -22,13 +21,16 @@ export class CustomMap {
 
   public async addMarker(input: mappable): Promise<void> {
     const [lat, lng] = [input.location.lat, input.location.lng];
-    L.marker([lat, lng]).addTo(this.map);
+    const marker = L.marker([lat, lng]).addTo(this.map);
     this.map.setView([lat, lng], 13);
 
     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
     const data = await response.json();
-    if (data.error) throw new Error(input.constructor.name + " address is invalid");
-    else console.log(`user location:  ${Object.values(data.address).join()}`);
-  }
+    if (data.error) this.address = " address is invalid";
+    else this.address = `${Object.values(data.address).join()}`;
 
+    marker.on("click", () => {
+      marker.bindPopup(this.address);
+    });
+  }
 }

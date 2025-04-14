@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
+import { mappable } from "./CustomMap";
 
-export class Company {
+export class Company implements mappable {
   companyName: string;
   catchPhrase: string;
   location: {
