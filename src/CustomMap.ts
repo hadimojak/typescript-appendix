@@ -1,28 +1,34 @@
 import { User } from "./User";
 import { Company } from "./Company";
+import * as L from "leaflet";
+
+interface mappable {
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
 
 export class CustomMap {
-  private googleMap: google.maps.Map;
+  private map: L.Map;
 
   constructor(divId: string) {
-    this.googleMap = new google.maps.Map(document.getElementById(divId) as HTMLElement, {
-      center: { lat: 0, lng: 0 },
-      zoom: 4,
-    });
+    this.map = L.map(divId);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.map);
+    this.map.setView([0, 0], 2);
   }
 
-  async addUserMarker(user: User): Promise<void> {
-    this.googleMap.setCenter({ lat: user.location.lat, lng: user.location.lng });
-    const latlng = this.googleMap.getCenter();
-    const [lat, lng] = [latlng?.lat(), latlng?.lng()];
+  public async addMarker(input: mappable): Promise<void> {
+    const [lat, lng] = [input.location.lat, input.location.lng];
+    L.marker([lat, lng]).addTo(this.map);
+    this.map.setView([lat, lng], 13);
 
-    console.log({ lat, lng });
-
-    const response = await fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}&api_key=67f67031afb2c744518634bwd4179ff`);
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
     const data = await response.json();
-    if (!data.address) throw new Error("address is invalid");
-    else console.log({ address: Object.values(data.address).join("__") });
+    if (data.error) throw new Error(input.constructor.name + " address is invalid");
+    else console.log(`user location:  ${Object.values(data.address).join()}`);
   }
 
-  addCompanyMarker(company: Company): void {}
 }
